@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser(
   epilog      = "example: make_server.py -p 8090 -o *.png -o report.pdf /path/to/my/Makefile"
 )
 parser.add_argument('Makefile')
-parser.add_argument('-p', '--port', default=8000,
-  help="the port on which the HTTP server shall listen, defaults to 8000"
+parser.add_argument('-p', '--port', type=int, default=8000,
+  help="the port number on which the HTTP server shall listen, defaults to 8000"
 )
 parser.add_argument('-o', '--output', action='append', default=[],
   help="files to return to the host (supports Unix style pathname pattern expansion)"
