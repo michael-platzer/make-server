@@ -25,6 +25,7 @@ import socketserver
 import tempfile
 import os
 import subprocess
+import mimetypes
 import glob
 import zipfile
 
@@ -59,7 +60,11 @@ class HTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(proc.stderr)
         return
 
-      ofpaths = [path for name in args.output for path in glob.glob(name, root_dir=dpath)]
+      mimes   = [val.split(';', 1)[0] for val in self.headers.get('Accept', '').split(',')]
+      ofglobs = args.output + [
+        f"*{ext}" for mime in mimes for ext in mimetypes.guess_all_extensions(mime)
+      ]
+      ofpaths = [path for name in ofglobs for path in glob.glob(name, root_dir=dpath)]
 
       ozpath = os.path.join(dpath, 'resp.zip')
       with zipfile.ZipFile(ozpath, 'w') as zipf:
